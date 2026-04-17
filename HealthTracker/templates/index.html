@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HealthSync Dashboard</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; margin: 0; padding: 20px; }
+        .nav { background: #2c3e50; color: white; padding: 15px 30px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; }
+        .reminder-box { background: #fff3cd; border-left: 6px solid #ffc107; padding: 15px; margin: 20px 0; border-radius: 8px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .bmi-badge { background: #27ae60; color: white; padding: 5px 15px; border-radius: 20px; font-size: 14px; }
+        .video-call { position: fixed; bottom: 20px; right: 20px; width: 350px; height: 380px; background: #000; border: 4px solid #27ae60; border-radius: 15px; overflow: hidden; z-index: 999; }
+        input, button { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; }
+        button { background: #27ae60; color: white; font-weight: bold; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div class="nav">
+        <h1>Hi, {{ user[0] }}!</h1>
+        <a href="/report" style="color: white; text-decoration: none; border: 1px solid white; padding: 8px 15px; border-radius: 6px;">📊 Report</a>
+    </div>
+
+    {% if reminders %}
+    <div class="reminder-box">
+        <strong>🔔 Smart Reminders:</strong>
+        <ul>{% for r in reminders %}<li>{{ r }}</li>{% endfor %}</ul>
+    </div>
+    {% endif %}
+
+    <div class="grid">
+        <div class="card">
+            <h3>🤖 AI Health Analysis</h3>
+            <p>Your BMI: <strong>{{ bmi }}</strong> <span class="bmi-badge">{{ status }}</span></p>
+            <hr>
+            <h4>Sync Today's Data</h4>
+            <form action="/sync" method="POST">
+                <input type="number" name="steps" placeholder="Enter Steps Done">
+                <input type="number" name="water" placeholder="Water Glasses">
+                <button type="submit">Save</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h3>Daily Progress</h3>
+            <p>Steps: <strong>{{ stats.steps }}</strong> / {{ user[4] }}</p>
+            <p>Calories Burned: <strong>{{ stats.cals }} kcal</strong></p>
+            <p>Hydration: <strong>{{ stats.water }} ml</strong></p>
+            <hr>
+            <h4>Group Session (Virtual)</h4>
+            <input type="text" id="roomName" placeholder="Enter Group Name">
+            <button onclick="joinVC()" style="background: #3498db;">Start Video Call & Chat</button>
+        </div>
+    </div>
+
+    <div class="video-call" id="vcWindow" style="display:none;">
+        <iframe id="jitsiFrame" src="" allow="camera; microphone; fullscreen" style="width:100%; height:280px; border:none;"></iframe>
+        <div style="background:white; height:100px; padding:10px;">
+            <div id="chatBox" style="height:45px; overflow-y:auto; font-size:12px; border-bottom: 1px solid #eee;">System: Connection Live.</div>
+            <input type="text" id="msgInput" placeholder="Chat with group..." style="height:30px; margin-top:5px;" onchange="sendChat()">
+        </div>
+    </div>
+
+    <script>
+        function joinVC() {
+            let room = document.getElementById('roomName').value;
+            if(room) {
+                document.getElementById('jitsiFrame').src = "https://meet.jit.si/" + room + "#config.prejoinPageEnabled=false";
+                document.getElementById('vcWindow').style.display = "block";
+            }
+        }
+        function sendChat() {
+            let inp = document.getElementById('msgInput');
+            document.getElementById('chatBox').innerHTML += "<br><b>You:</b> " + inp.value;
+            inp.value = "";
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HealthSync - Report</title>
+    <style>
+        body { font-family: 'Courier New', Courier, monospace; background: #eee; padding: 50px; }
+        .report-card { background: white; padding: 40px; border: 2px solid #333; max-width: 600px; margin: auto; box-shadow: 10px 10px 0px #333; }
+        .header { text-align: center; border-bottom: 2px solid #333; margin-bottom: 20px; }
+        .row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #ccc; }
+        .btn-group { margin-top: 20px; display: flex; gap: 10px; }
+        button, .back-btn { flex: 1; padding: 12px; border: none; font-weight: bold; cursor: pointer; text-align: center; text-decoration: none; font-family: sans-serif; }
+        button { background: #333; color: white; }
+        .back-btn { background: #ddd; color: #333; }
+        @media print { .no-print { display: none; } }
+    </style>
+</head>
+<body>
+    <div class="report-card">
+        <div class="header">
+            <h2>HEALTHSYNC SUMMARY</h2>
+            <p>Date: <span id="currentDate"></span></p>
+        </div>
+
+        <div class="row"><span>Name:</span> <strong>{{ user[0] }}</strong></div>
+        <div class="row"><span>Age:</span> <strong>{{ user[1] }}</strong></div>
+        <div class="row"><span>Recorded Weight:</span> <strong>{{ user[2] }} kg</strong></div>
+        <div class="row"><span>Recorded Height:</span> <strong>{{ user[3] }} m</strong></div>
+        <hr>
+        <div class="row"><span>Total Steps Logged:</span> <strong>{{ total_steps }}</strong></div>
+        <div class="row"><span>Calories Burned:</span> <strong>{{ total_cals }} kcal</strong></div>
+        <div class="row"><span>Total Water Intake:</span> <strong>{{ total_water }} ml</strong></div>
+        
+        <div class="btn-group no-print">
+            <button onclick="window.print()">Print Report (PDF)</button>
+            <a href="/" class="back-btn">Dashboard</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('currentDate').innerText = new Date().toLocaleDateString();
+    </script>
+</body>
+</html>
